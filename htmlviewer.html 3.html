@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 7.4.4.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		pre { font-family: "Liberation Mono", monospace; font-size: 10pt; background: transparent }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Zahlenrätsel&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      background-color: #303040;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #00a8e8;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    #timer {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00a8e8;
+    }
+
+    #chat {
+      background-color: #202030;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    #chat .user {
+      color: #ffffff;
+      margin-bottom: 5px;
+    }
+
+    #chat .bot {
+      color: #00a8e8;
+      margin-bottom: 5px;
+    }
+
+    #footer {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      color: #888888;
+    }
+
+    #user-input {
+      display: none;
+    }
+
+    #score {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00a8e8;
+    }
+  &lt;/style&gt;
+  &lt;script&gt;
+    var score = 0;
+    var randomNumber;
+    var startTime;
+    var timer;
+
+    function startGame() {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+      startTime = Date.now();
+      timer = setInterval(function() {
+        var elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        var remainingTime = 30 - elapsedTime;
+        document.getElementById(&quot;timer&quot;).textContent = remainingTime + &quot; Sekunden&quot;;
+        if (remainingTime &lt;= 0) {
+          clearInterval(timer);
+          score = 0;
+          document.getElementById(&quot;score&quot;).textContent = &quot;Score: &quot; + score;
+          showBotResponse(&quot;Verloren, Versuche es noch einmal :(&quot;);
+          startGame();
+        }
+      }, 1000);
+
+      showBotResponse(&quot;Übersetze die Zahl &quot; + randomNumber + &quot; auf Französisch:&quot;);
+      showUserInput();
+      document.getElementById(&quot;user-input-form&quot;).addEventListener(&quot;submit&quot;, function(event) {
+        event.preventDefault();
+        var userInput = document.getElementById(&quot;user-input&quot;).value.trim().toLowerCase().replace(/ /g, &quot;-&quot;);
+        var frenchNumber = convertToFrench(randomNumber);
+        if (userInput === frenchNumber) {
+          score++;
+          document.getElementById(&quot;score&quot;).textContent = &quot;Score: &quot; + score;
+          clearInterval(timer);
+          startTime += 3000;
+          showBotResponse(&quot;Richtig! Du hast gewonnen!&quot;);
+          hideUserInput();
+          setTimeout(startGame, 2000);
+        } else {
+          showBotResponse(getRandomWrongAnswer());
+        }
+        document.getElementById(&quot;user-input&quot;).value = &quot;&quot;;
+      });
+    }
+
+    function convertToFrench(number) {
+      var frenchNumbers = [
+        &quot;un&quot;, &quot;deux&quot;, &quot;trois&quot;, &quot;quatre&quot;, &quot;cinq&quot;, &quot;six&quot;, &quot;sept&quot;, &quot;huit&quot;, &quot;neuf&quot;, &quot;dix&quot;,
+        &quot;onze&quot;, &quot;douze&quot;, &quot;treize&quot;, &quot;quatorze&quot;, &quot;quinze&quot;, &quot;seize&quot;, &quot;dix-sept&quot;, &quot;dix-huit&quot;, &quot;dix-neuf&quot;, &quot;vingt&quot;,
+        &quot;vingt-et-un&quot;, &quot;vingt-deux&quot;, &quot;vingt-trois&quot;, &quot;vingt-quatre&quot;, &quot;vingt-cinq&quot;, &quot;vingt-six&quot;, &quot;vingt-sept&quot;, &quot;vingt-huit&quot;, &quot;vingt-neuf&quot;, &quot;trente&quot;,
+        &quot;trente-et-un&quot;, &quot;trente-deux&quot;, &quot;trente-trois&quot;, &quot;trente-quatre&quot;, &quot;trente-cinq&quot;, &quot;trente-six&quot;, &quot;trente-sept&quot;, &quot;trente-huit&quot;, &quot;trente-neuf&quot;, &quot;quarante&quot;,
+        &quot;quarante-et-un&quot;, &quot;quarante-deux&quot;, &quot;quarante-trois&quot;, &quot;quarante-quatre&quot;, &quot;quarante-cinq&quot;, &quot;quarante-six&quot;, &quot;quarante-sept&quot;, &quot;quarante-huit&quot;, &quot;quarante-neuf&quot;, &quot;cinquante&quot;,
+        &quot;cinquante-et-un&quot;, &quot;cinquante-deux&quot;, &quot;cinquante-trois&quot;, &quot;cinquante-quatre&quot;, &quot;cinquante-cinq&quot;, &quot;cinquante-six&quot;, &quot;cinquante-sept&quot;, &quot;cinquante-huit&quot;, &quot;cinquante-neuf&quot;, &quot;soixante&quot;,
+        &quot;soixante-et-un&quot;, &quot;soixante-deux&quot;, &quot;soixante-trois&quot;, &quot;soixante-quatre&quot;, &quot;soixante-cinq&quot;, &quot;soixante-six&quot;, &quot;soixante-sept&quot;, &quot;soixante-huit&quot;, &quot;soixante-neuf&quot;, &quot;soixante-dix&quot;,
+        &quot;soixante-et-onze&quot;, &quot;soixante-douze&quot;, &quot;soixante-treize&quot;, &quot;soixante-quatorze&quot;, &quot;soixante-quinze&quot;, &quot;soixante-seize&quot;, &quot;soixante-dix-sept&quot;, &quot;soixante-dix-huit&quot;, &quot;soixante-dix-neuf&quot;, &quot;quatre-vingts&quot;,
+        &quot;quatre-vingt-un&quot;, &quot;quatre-vingt-deux&quot;, &quot;quatre-vingt-trois&quot;, &quot;quatre-vingt-quatre&quot;, &quot;quatre-vingt-cinq&quot;, &quot;quatre-vingt-six&quot;, &quot;quatre-vingt-sept&quot;, &quot;quatre-vingt-huit&quot;, &quot;quatre-vingt-neuf&quot;, &quot;quatre-vingt-dix&quot;,
+        &quot;quatre-vingt-onze&quot;, &quot;quatre-vingt-douze&quot;, &quot;quatre-vingt-treize&quot;, &quot;quatre-vingt-quatorze&quot;, &quot;quatre-vingt-quinze&quot;, &quot;quatre-vingt-seize&quot;, &quot;quatre-vingt-dix-sept&quot;, &quot;quatre-vingt-dix-huit&quot;, &quot;quatre-vingt-dix-neuf&quot;, &quot;cent&quot;
+      ];
+
+      if (number &gt;= 1 &amp;&amp; number &lt;= 100) {
+        return frenchNumbers[number - 1];
+      } else {
+        return &quot;&quot;;
+      }
+    }
+
+    function getRandomWrongAnswer() {
+      var wrongAnswers = [
+        &quot;Das ist leider falsch. Versuche es erneut.&quot;,
+        &quot;Leider nicht korrekt. Probiere es noch einmal.&quot;,
+        &quot;Das ist nicht die richtige Antwort. Versuche es erneut.&quot;,
+        &quot;Leider falsch. Versuche es noch einmal.&quot;,
+        &quot;Falsche Antwort. Versuche es erneut.&quot;
+      ];
+
+      var randomIndex = Math.floor(Math.random() * wrongAnswers.length);
+      return wrongAnswers[randomIndex];
+    }
+
+    function showBotResponse(message) {
+      var chatDiv = document.getElementById(&quot;chat&quot;);
+      var botMessageDiv = document.createElement(&quot;div&quot;);
+      botMessageDiv.classList.add(&quot;bot&quot;);
+      botMessageDiv.textContent = &quot;Bot: &quot; + message;
+      chatDiv.appendChild(botMessageDiv);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    function showUserInput() {
+      document.getElementById(&quot;user-input&quot;).value = &quot;&quot;;
+      document.getElementById(&quot;user-input&quot;).style.display = &quot;block&quot;;
+    }
+
+    function hideUserInput() {
+      document.getElementById(&quot;user-input&quot;).value = &quot;&quot;;
+      document.getElementById(&quot;user-input&quot;).style.display = &quot;none&quot;;
+    }
+
+    function increaseFontSize() {
+      var chatDiv = document.getElementById(&quot;chat&quot;);
+      chatDiv.style.fontSize = &quot;18px&quot;;
+    }
+  &lt;/script&gt;
+&lt;/head&gt;
+&lt;body onload=&quot;startGame(); increaseFontSize()&quot;&gt;
+  &lt;h1&gt;Zahlenrätsel&lt;/h1&gt;
+  &lt;div id=&quot;chat&quot;&gt;&lt;/div&gt;
+  &lt;form id=&quot;user-input-form&quot;&gt;
+    &lt;input type=&quot;text&quot; id=&quot;user-input&quot;&gt;
+  &lt;/form&gt;
+  &lt;div id=&quot;timer&quot;&gt;30 Sekunden&lt;/div&gt;
+  &lt;div id=&quot;score&quot;&gt;Score: 0&lt;/div&gt;
+  &lt;div id=&quot;footer&quot;&gt;Made by IO&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</body>
+</html>
